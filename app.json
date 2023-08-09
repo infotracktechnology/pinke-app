@@ -21,10 +21,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.infotracktechnologysolutions.pinkeapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b400465c-f5f7-415b-b3b3-cc3952c88cd4"
+      }
+    },
+    "owner": "infotracktechnologysolutions"
   }
 }
