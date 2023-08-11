@@ -6,7 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 
 import HomeScreen from './HomeScreen'; 
-import  Setting  from './Setting';
+import AddContact from './AddContact';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -21,7 +22,7 @@ function NavigationContainerComponent() {
               iconName = focused
                 ? 'ios-home'
                 : 'ios-home-outline';
-            } else if (route.name === 'Setting') {
+            } else if (route.name === 'Add Contact') {
               iconName = focused ? 'ios-list' : 'ios-list-outline';
             }
             return <Ionicons name={iconName} size={size} color={color} />;
@@ -31,7 +32,7 @@ function NavigationContainerComponent() {
         })}>
 
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Setting" component={Setting} />
+        <Tab.Screen name="Add Contact" component={AddContact} />
       </Tab.Navigator>
     </NavigationContainer>
   );
