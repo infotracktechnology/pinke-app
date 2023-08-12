@@ -1,69 +1,86 @@
-import React, { useReducer } from 'react';
-import { Stack, ListItem, Avatar,Text } from '@react-native-material/core'; 
+import { useReducer, useState,useCallback,useEffect } from 'react';
+import { Stack, ListItem, Avatar,TextInput } from '@react-native-material/core'; 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { ScrollView,RefreshControl } from 'react-native';
 
-const initialContacts = [
-  {
-    id: 1,
-    name: 'John Doe',
-    phone: '123-456-7890',
-    photoUrl: 'https://mui.com/static/images/avatar/1.jpg', 
-    adderss1:'123 Main St',
-    address2: 'New York',
-    city: 'New York',
-    rating: 4,
 
-  },
-  {
-    id: 2,
-    name: 'Jane Smith',
-    phone: '987-654-3210',
-    photoUrl: 'https://mui.com/static/images/avatar/2.jpg', 
-    adderss1:'123 Main St',
-    address2: 'New York',
-    city: 'New York',
-    rating: 5,
-  },
-];
 
-const reducer = (state, action) => {
-  switch (action.type) {
-  
-    default:
-      return state;
-  }
-};
 
 function HomeScreen() {
-  const [contacts, dispatch] = useReducer(reducer, initialContacts);
+  const [contacts, setContacts] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setSearchQuery('');
+    fetchContacts();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+  const fetchContacts = () => {
+    fetch('https://infotrackin.com/enterprise/ContactAppController/all')
+      .then((response) => response.json())
+      .then((json) => setContacts(json));
+  };
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+  
 
   const handleCall = (phone) => {
    alert(phone);
   };
 
-  const handleIcon = (n) => {
-    alert(n);
-   };
+  const filteredContacts = contacts
+  ? contacts.filter(
+      (contact) =>
+        contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        contact.phone.includes(searchQuery)
+    )
+  : [];
+
+ 
 
   return (
+    <ScrollView refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }>
     <Stack spacing={4} mt={10}>
-      {contacts.map((contact) => (
+
+       <TextInput
+        placeholder="Search contacts"
+        variant='outlined'
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        style={{ paddingHorizontal: 10, }}
+        keyboardType="web-search"
+        inlineImageLeft='search_icon'
+      />
+
+      {filteredContacts.map((contact) => (
         <ListItem
           key={contact.id}
           leadingMode="avatar"
           leading={
-            <Avatar image={{ uri: contact.photoUrl }} />
+            <Avatar image={{ uri: contact.photo }} />
           }
           title={contact.phone}
           
-          overline={contact.name+handleIcon(contact.rating)}
-          secondaryText={contact.adderss1 + ', ' + contact.address2 + ', ' + contact.city} 
-          meta={<MaterialCommunityIcons name="phone"  color='black' size={20} onPress={() => handleCall(contact.phone)}/>}
+          overline={contact.name}
+          secondaryText={[...Array(contact.rating)].map((_, index) => (
+            <MaterialCommunityIcons key={index} name="star"  color='black' size={20} onPress={() => handleStarPress(index + 1)} />
+          ))} 
+          meta={ <MaterialCommunityIcons name="account-edit-outline" size={24} color="black" /> }
          
           onPress={() => {}}
         />
       ))}
     </Stack>
+    </ScrollView>
   );
 }
 
