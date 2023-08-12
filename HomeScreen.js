@@ -71,8 +71,8 @@ function HomeScreen() {
           title={contact.phone}
           
           overline={contact.name}
-          secondaryText={[...Array(contact.rating)].map((_, index) => (
-            <MaterialCommunityIcons key={index} name="star"  color='black' size={20} onPress={() => handleStarPress(index + 1)} />
+          secondaryText={[...Array(Number(contact.rating))].map((_, index) => (
+            <MaterialCommunityIcons key={index} name="star"  color='black' size={20}  />
           ))} 
           meta={ <MaterialCommunityIcons name="account-edit-outline" size={24} color="black" /> }
          
