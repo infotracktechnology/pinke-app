@@ -190,6 +190,7 @@ const handleDelete = async () => {
         <Button
         color="error"
         title="Delete Contact"
+        style={{ marginTop: 10 }}
         onPress={handleDelete}
         />
 

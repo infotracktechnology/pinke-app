@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Stack, ListItem, Avatar, TextInput   } from '@react-native-material/core';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { ScrollView, RefreshControl,StyleSheet,TouchableOpacity  } from 'react-native';
+import { ScrollView, RefreshControl,StyleSheet,TouchableOpacity,Linking  } from 'react-native';
 
 function HomeScreen({ navigation }) {
   const [contacts, setContacts] = useState(null);
@@ -74,9 +74,10 @@ function HomeScreen({ navigation }) {
             ))}
             meta={
               <MaterialCommunityIcons
-                name="account-edit-outline"
+                name="phone"
                 size={24}
                 color="black"
+                onPress={() => Linking.openURL(`tel:${contact.phone}`)}
               />
             }
           />
