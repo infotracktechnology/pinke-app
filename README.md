@@ -44,19 +44,19 @@ Follow these steps to get the React Contact App up and running on your local mac
 1. Clone the repository:
 
    ```bash
-   git clone [https://github.com/your-username/react-contact-app.git](https://github.com/infotracktechnology/pinke-app/)https://github.com/infotracktechnology/pinke-app/
+   git clone https://github.com/infotracktechnology/pinke-app/
 
    
 npm install
 # or
 yarn install
 
-Contributing
+### Contributing
 Contributions are welcome! If you find any issues or want to contribute new features or improvements, please open an issue or submit a pull request.
 
-License
+### License
 This project is licensed under the MIT License.
 
-Replace the placeholders (`your-username`, `react-contact-app`, etc.) with your actual GitHub username and repository name, and make sure to customize the description, features, and other sections according to your project's details. You can also add more sections, such as a "Technologies Used" section or "Acknowledgments," if needed.
+Replace the placeholders (`infotracktechnology`, `react-contact-app`, etc.) with your actual GitHub username and repository name, and make sure to customize the description, features, and other sections according to your project's details. You can also add more sections, such as a "Technologies Used" section or "Acknowledgments," if needed.
 
 
