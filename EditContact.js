@@ -1,11 +1,10 @@
-import React, { useState,useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { VStack, TextInput, Button, Text } from '@react-native-material/core';
 import { Image, TouchableOpacity, View, ScrollView,RefreshControl } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 
-
-function AddContact({ navigation }) {
+function EditContact({ route, navigation }) {
   const [name, setName] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [rating, setRating] = useState(0);
@@ -13,9 +12,30 @@ function AddContact({ navigation }) {
   const [addressLine1, setAddressLine1] = useState('');
   const [addressLine2, setAddressLine2] = useState('');
   const [city, setCity] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [ContactId, setContactId] = useState(0);
+ 
 
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      fetchContacts(route.params.id);
+    });
+  }, []);
+
+  const fetchContacts = (id) => {
+    fetch("https://infotrackin.com/enterprise/ContactAppController/findbyid/"+id)
+      .then((response) => response.json())
+      .then((json) => {
+        setName(json.name.trim());
+        setPhone(json.phone.trim());
+        setSelectedFile({ uri: json.photo });
+        setAddressLine1(json.addressLine1.trim());
+        setAddressLine2(json.addressLine2.trim());
+        setCity(json.city.trim());
+        setRating(json.rating);
+        setContactId(json.id);
+      });
+  }
 
   const pickImageFile = async () => {
     try {
@@ -39,44 +59,29 @@ function AddContact({ navigation }) {
     setRating(selectedRating);
   };
 
-  const resetAllFields = () => {
-    setName('');
-    setSelectedFile(null);
-    setRating(0);
-    setPhone('');
-    setAddressLine1('');
-    setAddressLine2('');
-    setCity('');
-  };
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    resetAllFields();
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
-
   const handleSumit = async () => {
-    if(name == '' || phone == '' || rating ==0 || selectedFile == null){
+    if(name == '' || phone == '' || rating ==0){
       alert('Please enter mandatory the fields')
     }
     else{
     setIsButtonDisabled(true);
     const formData = new FormData();
+    formData.append('id', ContactId);
     formData.append('name', name);
     formData.append('phone', phone);
-    formData.append('photo', {
-      uri: selectedFile.uri,
-      name: selectedFile.name,
-      type: 'image/jpeg',
-    });
+    if(selectedFile.hasOwnProperty('name')){
+      formData.append('photo', {
+        uri: selectedFile.uri,
+        name: selectedFile.name,
+        type: 'image/jpeg',
+      });
+    }
     formData.append('addressLine1', addressLine1);
     formData.append('addressLine2', addressLine2);
     formData.append('city', city);
     formData.append('rating', rating);
     try {
-      const response = await fetch('https://infotrackin.com/enterprise/ContactAppController/add_contact', {
+      const response = await fetch('https://infotrackin.com/enterprise/ContactAppController/Edit_contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -85,7 +90,7 @@ function AddContact({ navigation }) {
       });
       if (response.ok) {
         const responseData = await response.json();
-        alert('Contact added successfully');
+        alert('Contact updated successfully');
        console.log(responseData);
       }
   }
@@ -94,24 +99,39 @@ function AddContact({ navigation }) {
     }
     finally {
       setIsButtonDisabled(false); 
-      resetAllFields();
       navigation.navigate('Home');
     }
   }
 }
 
+const handleDelete = async () => {
+  try {
+    fetch("https://infotrackin.com/enterprise/ContactAppController/Delete_contact/"+ContactId)
+    .then((response) => {
+     if(response.ok){
+      alert('Contact deleted successfully');
+      navigation.navigate('Home');
+     }
+    })
+  } catch (error) {
+    alert(error);
+  }
+}
+
+
   return (
-    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-      <VStack direction="row" justify="center" spacing={10} mt={10} p={4}>
-        <Image
+    <ScrollView>
+      <VStack direction="column" spacing={10} mt={10} p={4}>
+      <Image
           alignSelf="center"
           source={{
             uri: selectedFile
               ? selectedFile.uri
-              : 'https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg',
+              : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
           }}
           style={{ width: 130, height: 130, borderRadius: 100 }}
         />
+
         <Button title="Choose a Photo" onPress={pickImageFile} />
         <TextInput
           label="Name*"
@@ -119,7 +139,7 @@ function AddContact({ navigation }) {
           onChangeText={setName}
           variant="outlined"
         />
-        <TextInput
+        <TextInput 
           label="Phone*"
           value={phone}
           onChangeText={setPhone}
@@ -127,7 +147,7 @@ function AddContact({ navigation }) {
           keyboardType="decimal-pad"
         />
         <TextInput
-          label="Address Line 1"
+          label="Address Line 1"  
           value={addressLine1}
           onChangeText={setAddressLine1}
           variant="outlined"
@@ -163,14 +183,19 @@ function AddContact({ navigation }) {
           ))}
         </View>
         <Button
-          title="Add Contact"
-          style={{ width: '100%' }}
+          title="Update Contact"
           onPress={handleSumit}
           disabled={isButtonDisabled}
         />
+        <Button
+        color="error"
+        title="Delete Contact"
+        onPress={handleDelete}
+        />
+
       </VStack>
     </ScrollView>
   );
 }
 
-export default AddContact;
+export default EditContact;
