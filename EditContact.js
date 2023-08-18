@@ -105,6 +105,8 @@ function EditContact({ route, navigation }) {
 }
 
 const handleDelete = async () => {
+  if(confirm('Are you sure you want to delete this contact?'))
+  {
   try {
     fetch("https://infotrackin.com/enterprise/ContactAppController/Delete_contact/"+ContactId)
     .then((response) => {
@@ -116,6 +118,8 @@ const handleDelete = async () => {
   } catch (error) {
     alert(error);
   }
+}
+
 }
 
 

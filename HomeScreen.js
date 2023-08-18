@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Stack, ListItem, Avatar, TextInput   } from '@react-native-material/core';
+import { Stack, ListItem, Avatar, TextInput,Text   } from '@react-native-material/core';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { ScrollView, RefreshControl,StyleSheet,TouchableOpacity,Linking  } from 'react-native';
+import { ScrollView, RefreshControl,Linking,TouchableOpacity  } from 'react-native';
 
 function HomeScreen({ navigation }) {
   const [contacts, setContacts] = useState(null);
@@ -41,8 +41,9 @@ function HomeScreen({ navigation }) {
     <ScrollView
       contentContainerStyle={{ paddingBottom: 80 }} 
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      style={{ flex: 1,backgroundColor: 'white' }}
     >
-      <Stack spacing={4} mt={10}>
+      <Stack spacing={4} mt={10} >
         <TextInput
           placeholder="Search contacts"
           variant="outlined"
@@ -53,7 +54,14 @@ function HomeScreen({ navigation }) {
           inlineImageLeft="search_icon"
         />
 
-           
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 60, paddingTop: 15,paddingBottom: 15   }}
+          onPress={() => navigation.navigate('Add Contact')}
+        >
+          <MaterialCommunityIcons name="account-plus-outline" color='#dd127b' size={24} style={{ marginRight: 15 }} />
+          <Text color='#dd127b'>Create New Contact</Text>
+        </TouchableOpacity>
+
 
         {filteredContacts.map((contact) => (
           <ListItem
@@ -83,28 +91,13 @@ function HomeScreen({ navigation }) {
           />
         ))}
 
-   <TouchableOpacity style={styles.fabContainer} onPress={() => navigation.navigate('Add Contact')}>
-    <MaterialCommunityIcons name="plus" size={24} color="white" />
-   </TouchableOpacity>
+
     
       </Stack>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  fabContainer: {
-    position: 'absolute',
-    bottom: -70,
-    right: 15,
-    backgroundColor: 'blue',
-    borderRadius: 30,
-    width: 60,
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 8,
-  },
-});
+
 
 export default HomeScreen;
