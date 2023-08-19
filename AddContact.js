@@ -52,13 +52,14 @@ function AddContact({ navigation }) {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     resetAllFields();
+    setIsButtonDisabled(false);
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
 
   const handleSumit = async () => {
-    if(name == '' || phone == '' || rating ==0 || selectedFile == null){
+    if(name == '' || phone == '' || rating ==0 ){
       alert('Please enter mandatory the fields')
     }
     else{
@@ -66,11 +67,13 @@ function AddContact({ navigation }) {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('phone', phone);
-    formData.append('photo', {
-      uri: selectedFile.uri,
-      name: selectedFile.name,
-      type: 'image/jpeg',
-    });
+    if(selectedFile!=null){
+      formData.append('photo', {
+        uri: selectedFile.uri,
+        name: selectedFile.name,
+        type: 'image/jpeg',
+      });
+    }
     formData.append('addressLine1', addressLine1);
     formData.append('addressLine2', addressLine2);
     formData.append('city', city);

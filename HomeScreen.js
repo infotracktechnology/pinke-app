@@ -1,16 +1,19 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Stack, ListItem, Avatar, TextInput,Text   } from '@react-native-material/core';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { ScrollView, RefreshControl,Linking,TouchableOpacity  } from 'react-native';
+import { ScrollView, RefreshControl,Linking,TouchableOpacity,StyleSheet  } from 'react-native';
+import Slider from '@react-native-community/slider';
 
 function HomeScreen({ navigation }) {
   const [contacts, setContacts] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [ratingFilter, setRatingFilter] = useState(0);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setSearchQuery('');
+    setRatingFilter(0);
     fetchContacts();
     setTimeout(() => {
       setRefreshing(false);
@@ -26,22 +29,26 @@ function HomeScreen({ navigation }) {
   useEffect(() => {
     navigation.addListener('focus', () => {
       fetchContacts();
+      setSearchQuery('');
+      setRatingFilter(0);
     });
   }, []);
 
   const filteredContacts = contacts
-    ? contacts.filter(
-        (contact) =>
-          contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          contact.phone.includes(searchQuery)
-      )
-    : [];
+  ? contacts.filter(
+      (contact) =>
+        (contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        contact.phone.includes(searchQuery)) &&
+        (ratingFilter === 0 || contact.rating == ratingFilter)
+    )
+  : [];
+
 
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 80 }} 
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      style={{ flex: 1,backgroundColor: 'white' }}
+      style={{ flex: 1, backgroundColor: '#fff' }}
     >
       <Stack spacing={4} mt={10} >
         <TextInput
@@ -54,8 +61,23 @@ function HomeScreen({ navigation }) {
           inlineImageLeft="search_icon"
         />
 
+
+<Text style={styles.ratingFilterLabel}>Filter Rating : {ratingFilter}</Text>
+  <Slider
+    style={styles.slider}
+    value={ratingFilter}
+    onValueChange={(value) => setRatingFilter(value)}
+    minimumValue={0}
+    maximumValue={5}
+    step={1}
+    minimumTrackTintColor="#307ecc"
+    maximumTrackTintColor="#000000"
+    thumbTintColor="#307ecc"
+
+  />
+ 
         <TouchableOpacity
-          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 60, paddingTop: 15,paddingBottom: 15   }}
+          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 60, paddingTop: 20,paddingBottom: 15   }}
           onPress={() => navigation.navigate('Add Contact')}
         >
           <MaterialCommunityIcons name="account-plus-outline" color='#dd127b' size={24} style={{ marginRight: 15 }} />
@@ -97,6 +119,27 @@ function HomeScreen({ navigation }) {
     </ScrollView>
   );
 }
+
+
+const styles = StyleSheet.create({
+  ratingFilterLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 8,
+    paddingLeft: 20,
+  },
+  slider: {
+    width: '100%',
+    paddingBottom: 10,
+    maxHeight: 400
+  },
+  ratingValueText: {
+    fontSize: 14,
+    color: '#888',
+    paddingLeft: 20,
+  },
+ 
+});
 
 
 

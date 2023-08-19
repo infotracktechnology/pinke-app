@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { VStack, TextInput, Button, Text } from '@react-native-material/core';
-import { Image, TouchableOpacity, View, ScrollView,RefreshControl } from 'react-native';
+import { Image, TouchableOpacity, View, ScrollView,Alert  } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 
 function EditContact({ route, navigation }) {
   const [name, setName] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState({ uri: null });
   const [rating, setRating] = useState(0);
   const [phone, setPhone] = useState('');
   const [addressLine1, setAddressLine1] = useState('');
@@ -105,8 +105,6 @@ function EditContact({ route, navigation }) {
 }
 
 const handleDelete = async () => {
-  if(confirm('Are you sure you want to delete this contact?'))
-  {
   try {
     fetch("https://infotrackin.com/enterprise/ContactAppController/Delete_contact/"+ContactId)
     .then((response) => {
@@ -118,9 +116,22 @@ const handleDelete = async () => {
   } catch (error) {
     alert(error);
   }
-}
+};
 
-}
+
+const createTwoButtonAlert = () =>
+Alert.alert('Are you sure you want to delete?', 'Click "OK" to delete', [
+  {
+    text: 'Cancel',
+    onPress: () => console.log('Cancel Pressed'),
+  },
+  {
+    text: 'OK',
+   onPress: () => {
+     handleDelete();
+   }
+  },
+]);
 
 
   return (
@@ -129,13 +140,13 @@ const handleDelete = async () => {
       <Image
           alignSelf="center"
           source={{
-            uri: selectedFile
+            uri: selectedFile.uri != null && selectedFile.uri !== ''
               ? selectedFile.uri
               : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
           }}
           style={{ width: 130, height: 130, borderRadius: 100 }}
         />
-
+        
         <Button title="Choose a Photo" onPress={pickImageFile} />
         <TextInput
           label="Name*"
@@ -195,7 +206,7 @@ const handleDelete = async () => {
         color="error"
         title="Delete Contact"
         style={{ marginTop: 10 }}
-        onPress={handleDelete}
+        onPress={createTwoButtonAlert}
         />
 
       </VStack>
