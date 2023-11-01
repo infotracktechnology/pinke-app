@@ -26,7 +26,9 @@ function NavigationContainerComponent() {
         headerTitleStyle: {
           fontWeight: 'bold',
         }
-      }} initialRouteName='Home'>
+      }} 
+      initialRouteName='Home'
+      >
       <Stack.Screen name="Home" component={HomeScreen} options={{title: 'Pinke Contacts'}} />
       <Stack.Screen name="Add Contact" component={AddContact}  options={{title: 'Pinke Contacts'}}/>
       <Stack.Screen name="Edit Contact"  component={EditContact}   options={{title: 'Pinke Contacts'}}/>

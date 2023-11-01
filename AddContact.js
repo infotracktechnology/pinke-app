@@ -61,8 +61,9 @@ function AddContact({ navigation }) {
   const handleSumit = async () => {
     if(name == '' || phone == '' || rating ==0 ){
       alert('Please enter mandatory the fields')
+      return false;
     }
-    else{
+    
     setIsButtonDisabled(true);
     const formData = new FormData();
     formData.append('name', name);
@@ -78,6 +79,7 @@ function AddContact({ navigation }) {
     formData.append('addressLine2', addressLine2);
     formData.append('city', city);
     formData.append('rating', rating);
+
     try {
       const response = await fetch('https://infotrackin.com/enterprise/ContactAppController/add_contact', {
         method: 'POST',
@@ -87,9 +89,7 @@ function AddContact({ navigation }) {
         body: formData,
       });
       if (response.ok) {
-        const responseData = await response.json();
         alert('Contact added successfully');
-       console.log(responseData);
       }
   }
   catch (error) {
@@ -100,7 +100,7 @@ function AddContact({ navigation }) {
       resetAllFields();
       navigation.navigate('Home');
     }
-  }
+  return true;
 }
 
   return (

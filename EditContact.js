@@ -35,6 +35,7 @@ function EditContact({ route, navigation }) {
         setRating(json.rating);
         setContactId(json.id);
       });
+      return true;
   }
 
   const pickImageFile = async () => {
@@ -53,6 +54,7 @@ function EditContact({ route, navigation }) {
     } catch (error) {
       alert(error);
     }
+    return true;
   };
 
   const handleStarPress = (selectedRating) => {
@@ -62,8 +64,9 @@ function EditContact({ route, navigation }) {
   const handleSumit = async () => {
     if(name == '' || phone == '' || rating ==0){
       alert('Please enter mandatory the fields')
+      return false;
     }
-    else{
+ 
     setIsButtonDisabled(true);
     const formData = new FormData();
     formData.append('id', ContactId);
@@ -89,9 +92,7 @@ function EditContact({ route, navigation }) {
         body: formData,
       });
       if (response.ok) {
-        const responseData = await response.json();
         alert('Contact updated successfully');
-       console.log(responseData);
       }
   }
   catch (error) {
@@ -101,7 +102,7 @@ function EditContact({ route, navigation }) {
       setIsButtonDisabled(false); 
       navigation.navigate('Home');
     }
-  }
+  return true;
 }
 
 const handleDelete = async () => {
@@ -144,7 +145,7 @@ Alert.alert('Are you sure you want to delete?', 'Click "OK" to delete', [
               ? selectedFile.uri
               : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
           }}
-          style={{ width: 130, height: 130, borderRadius: 100 }}
+          style={{ width: 220, height: 220, borderRadius: 150 }}
         />
         
         <Button title="Choose a Photo" onPress={pickImageFile} />

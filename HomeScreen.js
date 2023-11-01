@@ -4,6 +4,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { ScrollView, RefreshControl,Linking,TouchableOpacity,StyleSheet  } from 'react-native';
 import Slider from '@react-native-community/slider';
 
+
 function HomeScreen({ navigation }) {
   const [contacts, setContacts] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,7 +61,7 @@ function HomeScreen({ navigation }) {
           keyboardType="web-search"
           inlineImageLeft="search_icon"
         />
-
+     
 
 <Text style={styles.ratingFilterLabel}>Filter Rating : {ratingFilter}</Text>
   <Slider
@@ -83,6 +84,8 @@ function HomeScreen({ navigation }) {
           <MaterialCommunityIcons name="account-plus-outline" color='#dd127b' size={24} style={{ marginRight: 15 }} />
           <Text color='#dd127b'>Create New Contact</Text>
         </TouchableOpacity>
+
+   
 
 
         {filteredContacts.map((contact) => (
