@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { VStack, TextInput, Button, Text } from '@react-native-material/core';
-import { Image, TouchableOpacity, View, ScrollView,Alert  } from 'react-native';
+import { Image, TouchableOpacity, View, ScrollView,Alert,Dimensions   } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
-
+import ImageZoom from 'react-native-image-pan-zoom';
 function EditContact({ route, navigation }) {
   const [name, setName] = useState('');
   const [selectedFile, setSelectedFile] = useState({ uri: null });
@@ -138,15 +138,12 @@ Alert.alert('Are you sure you want to delete?', 'Click "OK" to delete', [
   return (
     <ScrollView>
       <VStack direction="column" spacing={10} mt={10} p={4}>
-      <Image
-          alignSelf="center"
-          source={{
-            uri: selectedFile.uri != null && selectedFile.uri !== ''
-              ? selectedFile.uri
-              : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
-          }}
-          style={{ width: 220, height: 220, borderRadius: 150 }}
-        />
+
+      <ImageZoom cropWidth={Dimensions.get('window').width} cropHeight={Dimensions.get('window').height} imageWidth={200} imageHeight={200}>
+    <Image alignSelf="center" source={{ uri: selectedFile.uri != null && selectedFile.uri !== ''
+              ? selectedFile.uri : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',}}
+          style={{ width: 200, height: 200, borderRadius: 150 }}/>  
+  </ImageZoom>
         
         <Button title="Choose a Photo" onPress={pickImageFile} />
         <TextInput
