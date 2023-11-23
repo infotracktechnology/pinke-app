@@ -139,10 +139,10 @@ Alert.alert('Are you sure you want to delete?', 'Click "OK" to delete', [
     <ScrollView>
       <VStack direction="column" spacing={10} mt={10} p={4}>
 
-      <ImageZoom cropWidth={Dimensions.get('window').width} cropHeight={Dimensions.get('window').height} imageWidth={200} imageHeight={200}>
+    <ImageZoom cropWidth={Dimensions.get('window').width} cropHeight={250} imageWidth={200} imageHeight={200}>
     <Image alignSelf="center" source={{ uri: selectedFile.uri != null && selectedFile.uri !== ''
               ? selectedFile.uri : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',}}
-          style={{ width: 200, height: 200, borderRadius: 150 }}/>  
+          style={{ width: 200, height: 200 , borderRadius: 100 }}/>  
   </ImageZoom>
         
         <Button title="Choose a Photo" onPress={pickImageFile} />
