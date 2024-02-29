@@ -47,7 +47,7 @@ function HomeScreen({ navigation }) {
       setRatingFilter(0);
       fetchlocation();
     });
-    fetchlocation();
+    //fetchlocation();
   }, []);
 
   const filteredContacts = contacts
