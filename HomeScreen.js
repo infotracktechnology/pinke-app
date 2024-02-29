@@ -3,6 +3,7 @@ import { Stack, ListItem, Avatar, TextInput,Text   } from '@react-native-materia
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { ScrollView, RefreshControl,Linking,TouchableOpacity,StyleSheet  } from 'react-native';
 import Slider from '@react-native-community/slider';
+import * as Location from 'expo-location';
 
 
 function HomeScreen({ navigation }) {
@@ -10,14 +11,16 @@ function HomeScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [ratingFilter, setRatingFilter] = useState(0);
+  const [location, setLocation] = useState(null);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setSearchQuery('');
     setRatingFilter(0);
     fetchContacts();
+    fetchlocation();
     setTimeout(() => {
-      setRefreshing(false);
+    setRefreshing(false);
     }, 2000);
   }, []);
 
@@ -27,12 +30,24 @@ function HomeScreen({ navigation }) {
       .then((json) => setContacts(json));
   };
 
+  const  fetchlocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Permission to access location was denied');
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+  };
+
   useEffect(() => {
     navigation.addListener('focus', () => {
       fetchContacts();
       setSearchQuery('');
       setRatingFilter(0);
+      fetchlocation();
     });
+    fetchlocation();
   }, []);
 
   const filteredContacts = contacts
@@ -64,6 +79,9 @@ function HomeScreen({ navigation }) {
      
 
 <Text style={styles.ratingFilterLabel}>Filter Rating : {ratingFilter}</Text>
+
+<Text>{JSON.stringify(location)}</Text>
+
   <Slider
     style={styles.slider}
     value={ratingFilter}
